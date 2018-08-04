@@ -23,7 +23,7 @@ $(BUILDDIR):
 	mkdir -p $@
 
 toolchain_build:
-	cd toolchain && $(MAKE) -j8 toolchain_build
+	cd toolchain && $(MAKE) -j4 toolchain_build
 
 toolchain_clean:
 	cd toolchain && $(MAKE) toolchain_clean
