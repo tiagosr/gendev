@@ -17,7 +17,7 @@ PATH := $(BUILDDIR)/bin:$(PATH)
 
 download-gcc: $(FILESDIR)/gcc-$(GCC_VERSION).tar.xz
 $(FILESDIR)/gcc-$(GCC_VERSION).tar.xz:
-	wget -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/gcc/releases/$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz -O $@
+	wget -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/gcc/releases/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz -O $@
 	touch $@
 
 download-binutils: $(FILESDIR)/binutils-$(BINUTILS_VERSION).tar.xz
