@@ -48,7 +48,7 @@ install:
 	cp -r $(BUILDDIR)/* $(GENDEV)/.
 
 build-binutils: $(WORKDIR)/build-binutils
-$(WORKDIR)/build-binutils: $(WORKDIR)
+$(WORKDIR)/build-binutils: $(WORKDIR)/binutils-$(BINUTILS_VERSION)
 	mkdir -p $@
 	cd $@ && ../binutils-$(BINUTILS_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --enable-install-libbfd --disable-werror
 	$(MAKE) -C $@ all install DESTDIR= > $(LOG)
