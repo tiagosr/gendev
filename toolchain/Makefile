@@ -51,15 +51,15 @@ build-binutils: $(WORKDIR)/build-binutils
 $(WORKDIR)/build-binutils: $(WORKDIR)/binutils-$(BINUTILS_VERSION)
 	mkdir -p $@
 	cd $@ && ../binutils-$(BINUTILS_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --enable-install-libbfd --disable-werror
-	$(MAKE) -j8 -C $@ all install DESTDIR= > $(LOG)
+	$(MAKE) -C $@ all install DESTDIR= > $(LOG)
 
 build-gcc-1: $(WORKDIR)/build-gcc
-$(WORKDIR)/build-gcc: $(WORKDIR)/gcc-$(GCC_VERSION)
+$(WORKDIR)/build-gcc: $(WORKDIR)/gcc-$(GCC_VERSION) build-binutils
 	# cd $(WORKDIR)/gcc-$(GCC_VERSION) && patch -p1 -i $(FILESDIR)/gcc.patch
 	cd $(WORKDIR)/gcc-$(GCC_VERSION) && ./contrib/download_prerequisites
 	mkdir -p $@
 	cd $@ && ../gcc-$(GCC_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --without-headers --with-newlib --enable-languages=c,c++ --disable-libssp --disable-tls --with-cpu=m68000 --disable-werror --disable-nls --disable-multilib
-	$(MAKE) -j8 -C $@ all install DESTDIR= > $(LOG)
+	$(MAKE) -C $@ all install DESTDIR= > $(LOG)
 
 build-newlib: $(WORKDIR)/build-newlib
 $(WORKDIR)/build-newlib: $(WORKDIR)/newlib-$(NEWLIB_VERSION) build-gcc-1
@@ -67,11 +67,11 @@ $(WORKDIR)/build-newlib: $(WORKDIR)/newlib-$(NEWLIB_VERSION) build-gcc-1
 	find $(WORKDIR) -name "m68k-elf-cc"
 	mkdir -p $@
 	cd $@ && ../newlib-$(NEWLIB_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --with-cpu=m68000 --disable-werror
-	$(MAKE) -j8 -C $@ all install DESTDIR= $(LOG)
+	$(MAKE) -C $@ all install DESTDIR= $(LOG)
 
 build-gcc-2: build-gcc-1 build-newlib
 	cd $(WORKDIR)/build-gcc &&  ../gcc-$(GCC_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --with-newlib --disable-libssp --disable-tls --enable-threads=single --enable-languages=c,c++ --with-cpu=m68000 --disable-werror --disable-nls --disable-multilib
-	$(MAKE) -j8 -C $(WORKDIR)/build-gcc all install DESTDIR= $(LOG)
+	$(MAKE) -C $(WORKDIR)/build-gcc all install DESTDIR= $(LOG)
 	cp $(BUILDDIR)/lib/gcc/m68k-elf/$(GCC_VERSION)/libgcc.a $(BUILDDIR)/lib/.
 
 build-ldscripts: $(BUILDDIR)/ldscripts
