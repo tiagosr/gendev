@@ -23,13 +23,13 @@ $(BUILDDIR):
 	mkdir -p $@
 
 toolchain_build:
-	cd toolchain && $(MAKE) toolchain_build
+	cd toolchain && $(MAKE) -j8 toolchain_build
 
 toolchain_clean:
 	cd toolchain && $(MAKE) toolchain_clean
 
 tools_build: 
-	cd tools && $(MAKE) tools_build
+	cd tools && $(MAKE) -j8 tools_build
 
 tools_clean: 
 	cd tools && $(MAKE) tools_clean
