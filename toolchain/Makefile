@@ -17,20 +17,20 @@ PATH := $(BUILDDIR)/bin:$(PATH)
 
 download-gcc: $(FILESDIR)/gcc-$(GCC_VERSION).tar.xz
 $(FILESDIR)/gcc-$(GCC_VERSION).tar.xz:
-	wget -nv -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/gcc/releases/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz -O $@
+	wget -nv ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/gcc/releases/gcc-$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz -O $@
 	touch $@
 
 download-binutils: $(FILESDIR)/binutils-$(BINUTILS_VERSION).tar.xz
 $(FILESDIR)/binutils-$(BINUTILS_VERSION).tar.xz:
-	wget -nv -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/binutils/releases/binutils-$(BINUTILS_VERSION).tar.xz -O $@
+	wget -nv ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/binutils/releases/binutils-$(BINUTILS_VERSION).tar.xz -O $@
 	touch $@
 
 download-newlib: $(FILESDIR)/newlib-$(NEWLIB_VERSION).tar.gz
 $(FILESDIR)/newlib-$(NEWLIB_VERSION).tar.gz:
-	wget -nv -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/newlib/newlib-$(NEWLIB_VERSION).tar.gz -O $@
+	wget -nv ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/newlib/newlib-$(NEWLIB_VERSION).tar.gz -O $@
 	touch $@
 
-toolchain_build: $(BUILDDIR) download-gcc download-binutils download-newlib setup build-binutils build-gcc-1 build-newlib build-gcc-2 build-ldscripts
+toolchain_build: $(BUILDDIR) setup build-binutils build-gcc-1 build-newlib build-gcc-2 build-ldscripts
 	echo "Toolchain done"
 
 toolchain_params:
@@ -48,13 +48,13 @@ install:
 	cp -r $(BUILDDIR)/* $(GENDEV)/.
 
 build-binutils: $(WORKDIR)/build-binutils
-$(WORKDIR)/build-binutils:
+$(WORKDIR)/build-binutils: $(WORKDIR)
 	mkdir -p $@
 	cd $@ && ../binutils-$(BINUTILS_VERSION)/configure --target=m68k-elf --prefix=$(BUILDDIR) --enable-install-libbfd --disable-werror
 	$(MAKE) -C $@ all install DESTDIR= > $(LOG)
 
 build-gcc-1: $(WORKDIR)/build-gcc
-$(WORKDIR)/build-gcc:
+$(WORKDIR)/build-gcc: $(WORKDIR)/gcc-$(GCC_VERSION)
 	# cd $(WORKDIR)/gcc-$(GCC_VERSION) && patch -p1 -i $(FILESDIR)/gcc.patch
 	cd $(WORKDIR)/gcc-$(GCC_VERSION) && ./contrib/download_prerequisites
 	mkdir -p $@
@@ -62,7 +62,7 @@ $(WORKDIR)/build-gcc:
 	$(MAKE) -C $@ all install DESTDIR= > $(LOG)
 
 build-newlib: $(WORKDIR)/build-newlib
-$(WORKDIR)/build-newlib:
+$(WORKDIR)/build-newlib: $(WORKDIR)/newlib-$(NEWLIB_VERSION)
 	find $(BUILDDIR) -name "m68k-elf-cc"
 	find $(WORKDIR) -name "m68k-elf-cc"
 	mkdir -p $@
@@ -102,7 +102,7 @@ $(WORKDIR)/%: $(FILESDIR)/%
 	cd $(WORKDIR) && \
 		tar xf $<.*
 
-$(FILESDIR)/%: download-gcc download-binutils download-gcc
+$(FILESDIR)/%: download-gcc download-binutils download-newlib
 	@echo "Will extract $@"
 
 setup: $(WORKDIR) $(PKGS)
