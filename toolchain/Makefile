@@ -16,14 +16,17 @@ LOG?=/dev/null
 PATH := $(BUILDDIR)/bin:$(PATH)
 
 download-gcc: $(FILESDIR)/gcc-$(GCC_VERSION).tar.xz
+$(FILESDIR)/gcc-$(GCC_VERSION).tar.xz:
 	wget -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/gcc/releases/$(GCC_VERSION)/gcc-$(GCC_VERSION).tar.xz -O $@
 	touch $@
 
 download-binutils: $(FILESDIR)/binutils-$(BINUTILS_VERSION).tar.xz
+$(FILESDIR)/binutils-$(BINUTILS_VERSION).tar.xz:
 	wget -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/binutils/releases/binutils-$(BINUTILS_VERSION).tar.xz -O $@
 	touch $@
 
-download-newlib: $(FILESDIR)/newlib-$(NEWLIB_VERSION).tar.gz
+download-newlib: $(FILESDIR)/newlib-$(NEWLIB_VERSION).tar.gz:
+$(FILESDIR)/newlib-$(NEWLIB_VERSION).tar.gz:
 	wget -N ftp://ftp.gwdg.de/pub/linux/sources.redhat.com/newlib/newlib-$(NEWLIB_VERSION).tar.gz -O $@
 	touch $@
 
