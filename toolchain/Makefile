@@ -98,7 +98,7 @@ PKGS=$(addprefix $(WORKDIR)/,$(notdir $(ARCH_DIRS)))
 $(WORKDIR): 
 	mkdir -p $(WORKDIR)
 
-$(WORKDIR)/%: $(FILESDIR)/%
+$(WORKDIR)/%: $(FILESDIR)/% download-gcc download-binutils download-newlib
 	cd $(WORKDIR) && \
 		tar xf $<.*
 
