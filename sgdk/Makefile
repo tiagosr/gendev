@@ -7,16 +7,13 @@ SAMPLESDIR=$(SGDKDIR)/sample
 SGDKVER=v1.51
 SGDKINSTALLDIR=$(GENDEV)/sgdk$(SGDKVER)
 
-
-all: tools $(SGDKDIR) $(SGDKDIR)/libmd.a 
+all: tools $(SGDKDIR) $(SGDKDIR)/libmd.a
 
 tools: $(SGDKDIR)
 	cd $(SGDKDIR)/tools/bintos/src && \
 	gcc -o bintos bintos.c  && cp bintos $(GENDEV)/bin/.
 	cd $(SGDKDIR)/tools/sizebnd/src && \
 	gcc -o sizebnd sizebnd.c  && cp sizebnd $(GENDEV)/bin/.
-	cd $(SGDKDIR)/tools/wavtoraw/src && \
-	gcc -o wavtoraw wavtoraw.c -lm && cp wavtoraw $(GENDEV)/bin/.
 	cd $(SGDKDIR)/tools/xgmtool && \
 		$(MAKE) -f ../../../files/Makefile.xgmtool && cp out/xgmtool $(GENDEV)/bin/.
 	cp $(SGDKDIR)/bin/*.jar $(GENDEV)/bin/.
@@ -34,10 +31,11 @@ $(SGDKDIR):
 $(SGDKDIR)/libmd.a: $(SGDKDIR)
     cp -rf ../tools/files/applib/lib $(SGDKDIR)/tools/appack
 	cd $(SGDKDIR) && ln -sf ../files/Makefile.sgdk_lib .
-	cd $(SGDKDIR) && $(MAKE) -f Makefile.sgdk_lib 
+	cd $(SGDKDIR) && $(MAKE) -f Makefile.sgdk_lib
 
 $(SGDKINSTALLDIR):
 	mkdir -p $@
+	rm -f $(GENDEV)/sgdk
 	cd $(GENDEV) && ln -sf sgdk$(SGDKVER) sgdk
 
 install: tools $(SGDKDIR)/libmd.a $(SGDKINSTALLDIR)
@@ -66,7 +64,7 @@ sample_clean: $(CLEANSAMPLES)
 	@echo "Done cleaning samples"
 
 $(CLEANSAMPLES):
-	cd $@/.. && $(MAKE) -f $(GENDEV)/sgdk/mkfiles/makefile.gen clean
+	cd $@/.. && $(MAKE) -f $(SGDKDIR)/makefile.gen clean
 
 samples: $(SAMPLEROMS)
 	@echo "All samples built"
