@@ -29,7 +29,7 @@ $(SGDKDIR):
 	git clone -b '$(SGDKVER)' --single-branch --depth 1 https://github.com/Stephane-D/SGDK.git
 	
 $(SGDKDIR)/libmd.a: $(SGDKDIR)
-    cp -rf ../tools/files/applib/lib $(SGDKDIR)/tools/appack
+	cp -rf ../tools/files/applib/lib $(SGDKDIR)/tools/appack
 	cd $(SGDKDIR) && ln -sf ../files/Makefile.sgdk_lib .
 	cd $(SGDKDIR) && $(MAKE) -f Makefile.sgdk_lib
 
