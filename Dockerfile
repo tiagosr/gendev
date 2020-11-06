@@ -16,8 +16,9 @@ RUN apt update && \
 
 WORKDIR /work
 COPY tools /work/tools/
-COPY Makefile /work
-COPY sgdk /work/sgdk
+COPY Makefile /work/
+COPY sgdk /work/sgdk/
+COPY toolchain /work/toolchain/
 RUN make
 RUN make install
 
