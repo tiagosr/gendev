@@ -1,11 +1,38 @@
-FROM tiagosr/cross-compiler-base-auto:latest
+FROM ubuntu:bionic as build
 
-WORKDIR /tmp
-
+ENV DEBIAN_FRONTEND noninteractive
 ENV GENDEV /opt/gendev
 
-RUN bash -c "git clone --depth 1 https://github.com/tiagosr/gendev.git && cd gendev && make && make install && cp -r ./extras /opt/gendev/ && cp -r ./examples /opt/gendev/ && rm -rf /tmp/*"
+RUN apt update && \
+    apt install -y \
+        build-essential \
+        wget \
+        unzip \
+        unrar-free \
+        texinfo \
+        git \
+        openjdk-8-jdk-headless && \
+    apt clean
 
-WORKDIR /source
+WORKDIR /work
+COPY tools /work/tools/
+COPY Makefile /work
+COPY sgdk /work/sgdk
+RUN make
+RUN make install
 
-CMD /bin/bash
+FROM ubuntu:bionic
+RUN apt update && \
+    apt instal -y \
+        openjdk-8-jre-headless \
+        build-essential \
+        make && \
+    apt clean
+
+ENV GENDEV /opt/gendev
+COPY --from=build /opt/gendev $GENDEV
+ENV PATH $GENDEV/bin:$PATH
+
+WORKDIR /src
+
+ENTRYPOINT make -f $GENDEV/sgdk/mkfiles/makefile.gen
