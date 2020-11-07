@@ -21,7 +21,7 @@ TOOLS+=$(TOOLSDIR)/sixpack
 TOOLS+=$(TOOLSDIR)/appack
 
 tools_build: $(WORKDIR) $(TOOLSDIR) $(TOOLS)
-	-cp extras/scripts/*.* $(TOOLSDIR)/.
+	-cp extras/scripts/* $(TOOLSDIR)/.
 	echo "Done with tools."
 
 tools_clean:

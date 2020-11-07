@@ -30,12 +30,19 @@ INCS = -Iinc -Ires
 FLAGS = $(OPTION) -m68000 -Wall -O1 -c -fomit-frame-pointer $(INCS)
 FLAGSZ80 = -isrc -iinc
 
+LBITS = $(shell getconf LONG_BIT)
+ifeq ($(LBITS), 64)
+appack_makefile = makefile.elf64
+else
+appack_makefile = makefile.elf
+endif
+
 all: appack $(libmd.a_OBJS) libmd.a
 
 appack:
 	echo -n "osBits="> tools/appack/makefile.vars
 	getconf LONG_BIT >> tools/appack/makefile.vars
-	cd tools/appack/ && make -f makefile.elf
+	cd tools/appack/ && make -f $(appack_makefile)
 	cp tools/appack/appack bin/
 
 %.a: $(libmd.a_OBJS)

@@ -24,7 +24,7 @@ RUN make install
 
 FROM ubuntu:bionic
 RUN apt update && \
-    apt instal -y \
+    apt install -y \
         openjdk-8-jre-headless \
         build-essential \
         make && \
